@@ -2,8 +2,11 @@
 一个使用fabric-go-sdk启动fabric网络并提供Gin框架支持的demo应用
 
 1.注意该项目应该放在 $GOPATH/src 下否则将无法启动
-`cd $GOPATH && mkdir src`
-`cd $GOPATH/src && git clone https://github.com/wry233333/Fabric-Gin.git`
+
+```
+cd $GOPATH && mkdir src
+cd $GOPATH/src && git clone https://github.com/wry233333/Fabric-Gin.git
+```
 
 2.启动命令
 `./Start.sh`
