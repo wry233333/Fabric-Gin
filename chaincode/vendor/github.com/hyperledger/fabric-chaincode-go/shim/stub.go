@@ -258,6 +258,14 @@ func (s *ChaincodeStub) DelPrivateData(collection string, key string) error {
 	return s.handler.handleDelState(collection, key, s.ChannelID, s.TxID)
 }
 
+// PurgePrivateData documentation can be found in interfaces.go
+func (s *ChaincodeStub) PurgePrivateData(collection string, key string) error {
+	if collection == "" {
+		return fmt.Errorf("collection must not be an empty string")
+	}
+	return s.handler.handlePurgeState(collection, key, s.ChannelID, s.TxID)
+}
+
 // GetPrivateDataByRange documentation can be found in interfaces.go
 func (s *ChaincodeStub) GetPrivateDataByRange(collection, startKey, endKey string) (StateQueryIteratorInterface, error) {
 	if collection == "" {
@@ -433,12 +441,12 @@ func (s *ChaincodeStub) GetHistoryForKey(key string) (HistoryQueryIteratorInterf
 	return &HistoryQueryIterator{CommonIterator: &CommonIterator{s.handler, s.ChannelID, s.TxID, response, 0}}, nil
 }
 
-//CreateCompositeKey documentation can be found in interfaces.go
+// CreateCompositeKey documentation can be found in interfaces.go
 func (s *ChaincodeStub) CreateCompositeKey(objectType string, attributes []string) (string, error) {
 	return CreateCompositeKey(objectType, attributes)
 }
 
-//SplitCompositeKey documentation can be found in interfaces.go
+// SplitCompositeKey documentation can be found in interfaces.go
 func (s *ChaincodeStub) SplitCompositeKey(compositeKey string) (string, []string, error) {
 	return splitCompositeKey(compositeKey)
 }
@@ -448,12 +456,12 @@ func CreateCompositeKey(objectType string, attributes []string) (string, error) 
 	if err := validateCompositeKeyAttribute(objectType); err != nil {
 		return "", err
 	}
-	ck := compositeKeyNamespace + objectType + string(minUnicodeRuneValue)
+	ck := compositeKeyNamespace + objectType + string(rune(minUnicodeRuneValue))
 	for _, att := range attributes {
 		if err := validateCompositeKeyAttribute(att); err != nil {
 			return "", err
 		}
-		ck += att + string(minUnicodeRuneValue)
+		ck += att + string(rune(minUnicodeRuneValue))
 	}
 	return ck, nil
 }
@@ -483,10 +491,10 @@ func validateCompositeKeyAttribute(str string) error {
 	return nil
 }
 
-//To ensure that simple keys do not go into composite key namespace,
-//we validate simplekey to check whether the key starts with 0x00 (which
-//is the namespace for compositeKey). This helps in avoding simple/composite
-//key collisions.
+// To ensure that simple keys do not go into composite key namespace,
+// we validate simplekey to check whether the key starts with 0x00 (which
+// is the namespace for compositeKey). This helps in avoding simple/composite
+// key collisions.
 func validateSimpleKeys(simpleKeys ...string) error {
 	for _, key := range simpleKeys {
 		if len(key) > 0 && key[0] == compositeKeyNamespace[0] {
@@ -496,12 +504,7 @@ func validateSimpleKeys(simpleKeys ...string) error {
 	return nil
 }
 
-//GetStateByPartialCompositeKey function can be invoked by a chaincode to query the
-//state based on a given partial composite key. This function returns an
-//iterator which can be used to iterate over all composite keys whose prefix
-//matches the given partial composite key. This function should be used only for
-//a partial composite key. For a full composite key, an iter with empty response
-//would be returned.
+// GetStateByPartialCompositeKey documentation can be found in interfaces.go
 func (s *ChaincodeStub) GetStateByPartialCompositeKey(objectType string, attributes []string) (StateQueryIteratorInterface, error) {
 	collection := ""
 	startKey, endKey, err := s.createRangeKeysForPartialCompositeKey(objectType, attributes)

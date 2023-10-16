@@ -89,7 +89,7 @@ func InitFabric ()  sdkInit.Application{
 
 	// create chaincode lifecycle
 	if err := sdkInit.CreateCCLifecycle(&info, 1, false, sdk); err != nil {
-		fmt.Println(">> create chaincode lifecycle error", )
+		fmt.Println(">> create chaincode lifecycle error %v", err)
 		os.Exit(-1)
 	}
 

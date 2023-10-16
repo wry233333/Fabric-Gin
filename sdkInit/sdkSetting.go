@@ -462,7 +462,7 @@ func initCC(ccName string, upgrade bool, channelID string, org *OrgInfo, sdk *fa
 	}
 
 	// init
-	_, err = client.Execute(channel.Request{ChaincodeID: ccName, Fcn: "init", Args: nil, IsInit: true},
+	_, err = client.Execute(channel.Request{ChaincodeID: ccName, Fcn: "InitLedger", Args: nil, IsInit: true},
 		channel.WithRetry(retry.DefaultChannelOpts))
 	if err != nil {
 		return fmt.Errorf("Failed to init: %s", err)
