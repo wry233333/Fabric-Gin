@@ -44,22 +44,18 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 		if err != nil {
 			return fmt.Errorf("failed to put to world state. %v", err)
 		}
-		err = ctx.GetStub().PutState(asset.Color, assetJSON)
-		if err != nil {
-			return fmt.Errorf("failed to put to world state. %v", err)
-		}
 	}
 
 	return nil
 }
 
-func (s *SmartContract) TestFunc(ctx contractapi.TransactionContextInterface, color string) (*Asset, error){
-	assetJSON, err := ctx.GetStub().GetState(color)
+func (s *SmartContract) QueryAssets(ctx contractapi.TransactionContextInterface, ID string) (*Asset, error){
+	assetJSON, err := ctx.GetStub().GetState(ID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read from world state: %v", err)
 	}
 	if assetJSON == nil {
-		return nil, fmt.Errorf("the asset %s does not exist", color)
+		return nil, fmt.Errorf("the asset %s does not exist", ID)
 	}
 
 	var asset Asset
@@ -72,7 +68,7 @@ func (s *SmartContract) TestFunc(ctx contractapi.TransactionContextInterface, co
 }
 
 // CreateAsset issues a new asset to the world state with given details.
-func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
+func (s *SmartContract) (ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
 	exists, err := s.AssetExists(ctx, id)
 	if err != nil {
 		return err

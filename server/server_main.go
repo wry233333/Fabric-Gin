@@ -10,7 +10,7 @@ var App sdkInit.Application
 func ServerInit(app sdkInit.Application) {
 	App = app
 	r := gin.Default()
-	r.GET("/add", AddAssets)
-	r.GET("/query", QueryAssets)
+	r.GET("/query/:ID", QueryAssets)
+	r.POST("/add", AddAssets)
 	r.Run(":8080")
 }
