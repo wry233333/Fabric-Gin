@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
@@ -49,7 +50,7 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	return nil
 }
 
-func (s *SmartContract) QueryAssets(ctx contractapi.TransactionContextInterface, ID string) (*Asset, error){
+func (s *SmartContract) QueryAssets(ctx contractapi.TransactionContextInterface, ID string) (*Asset, error) {
 	assetJSON, err := ctx.GetStub().GetState(ID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read from world state: %v", err)
@@ -68,28 +69,25 @@ func (s *SmartContract) QueryAssets(ctx contractapi.TransactionContextInterface,
 }
 
 // CreateAsset issues a new asset to the world state with given details.
-func (s *SmartContract) (ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
-	exists, err := s.AssetExists(ctx, id)
+func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, assetJSON string) error {
+	var asset Asset
+	err := json.Unmarshal([]byte(assetJSON), &asset)
+	if err != nil {
+		return err
+	}
+	exists, err := s.AssetExists(ctx, asset.ID)
 	if err != nil {
 		return err
 	}
 	if exists {
-		return fmt.Errorf("the asset %s already exists", id)
+		return fmt.Errorf("the asset %s already exists", asset.ID)
 	}
 
-	asset := Asset{
-		ID:             id,
-		Color:          color,
-		Size:           size,
-		Owner:          owner,
-		AppraisedValue: appraisedValue,
-	}
-	assetJSON, err := json.Marshal(asset)
 	if err != nil {
 		return err
 	}
 
-	return ctx.GetStub().PutState(id, assetJSON)
+	return ctx.GetStub().PutState(asset.ID, []byte(assetJSON))
 }
 
 // ReadAsset returns the asset stored in the world state with given id.

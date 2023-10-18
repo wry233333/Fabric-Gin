@@ -1,6 +1,9 @@
 package server
 
 import (
+	"io/ioutil"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,17 +29,18 @@ func QueryAssets (c *gin.Context) {
 }
 
 func AddAssets (c *gin.Context) {
-	var asset Asset
-	if err := c.ShouldBindJSON(&asset); err != nil {
-		c.AbortWithError(500, err)
-	}
-	a := []string{"CreateAsset", asset.ID, asset.Color, string(asset.Size), asset.Owner, string(asset.AppraisedValue)}
-	_, err := App.Set(a)
+	value, err := ioutil.ReadAll(c.Request.Body)
+    if err != nil {
+      c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+      return
+    }
+	a := []string{"CreateAsset", string(value)}
+	_, err = App.Set(a)
 	if err != nil {
 		c.AbortWithError(500, err)
 	}
 	c.JSON(200, gin.H{
 		"message": "Success",
-		"data": nil,
+		"data": value,
 	})
 }
