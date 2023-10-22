@@ -6,6 +6,7 @@
 ```
 cd $GOPATH && mkdir src
 cd $GOPATH/src && git clone https://github.com/wry233333/Fabric-Gin.git
+mv Fabric_Gin fabric-sdk-go
 ```
 
 2.启动命令
@@ -30,5 +31,4 @@ PS:如果启动提示链接终止无法连接到对等节点则进行以下操�
   ```
   然后进行第二步重试
   
-  
-  
+若是碰到链码安装错误报x509证书认识失败则检查go的版本，go的版本必须为1.18

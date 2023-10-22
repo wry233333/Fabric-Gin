@@ -148,7 +148,7 @@ func CreateCCLifecycle(info *SdkEnvInfo, sequence int64, upgrade bool, sdk *fabs
 	}
 	fmt.Println(">> 安装链码成功")
 
-	// Approve cc
+	//Approve cc
 	fmt.Println(">> 组织认可智能合约定义......")
 	if err := approveCC(packageID, info.ChaincodeID, info.ChaincodeVersion, sequence, info.ChannelID, info.Orgs, info.OrdererEndpoint); err != nil {
 		return fmt.Errorf("approveCC error: %v", err)
