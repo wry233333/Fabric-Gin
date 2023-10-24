@@ -141,3 +141,14 @@ services:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - test
+
+  redis:
+    container_name: redis
+    image: redis
+    volumes:
+      - ../redis/data:/data
+      - ../redis/conf:/usr/local/etc/redis
+      - ../redis/logs:/var/log/redis
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    ports:
+      - "6379:6379"
